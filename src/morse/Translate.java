@@ -69,6 +69,8 @@ public class Translate {
         }
     }
 
+    private String info = "Morse Translator";
+
     public translator() {
         JTextArea englishTextArea = new JTextArea(20,20);
             englishTextArea.setText("Hello World");
@@ -118,11 +120,7 @@ public class Translate {
             morseTextPanel.add(new JScrollPane(morseTextArea), BorderLayout.CENTER);
             morseTextPanel.add(morseControlPanel, BorderLayout.SOUTH);
 
-
-
-
-        JSplitPane splitPane =
-                new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, englishTextPanel, morseTextPanel);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, englishTextPanel, morseTextPanel);
             splitPane.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
         JTextArea infoTextArea = new JTextArea();
@@ -141,5 +139,21 @@ public class Translate {
         JPanel mainPanel = new JPanel(new BorderLayout());
             mainPanel.add(infoPanel, BorderLayout.NORTH);
             mainPanel.add(splitPane, BorderLayout.CENTER);
+
+        morseToEnglishBt.addActionListener((w) -> {
+            String morse = morseTextArea.getText().trim();
+            englishTextArea.setText(morse_english(morse));
+        });
+        englishToMorseBt.addActionListener((e) -> {
+            String english = englishTextArea.getText().trim();
+            morseTextArea.setText(english_morse(english));
+        });
+
+        englishTextArea.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                super.keyTyped(e);
+            }
+        });
     }
 }
