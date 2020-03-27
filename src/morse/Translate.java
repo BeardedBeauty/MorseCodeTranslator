@@ -7,7 +7,6 @@ import java.util.List;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.*;
 import java.util.stream.Stream;
 
 
@@ -71,7 +70,7 @@ public class Translate {
 
     private String info = "Morse Translator";
 
-    public translator() {
+    public void translator() {
         JTextArea englishTextArea = new JTextArea(20,20);
             englishTextArea.setText("Hello World");
             englishTextArea.setLineWrap(true);
@@ -151,9 +150,62 @@ public class Translate {
 
         englishTextArea.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyTyped(KeyEvent e) {
-                super.keyTyped(e);
+            public void keyTyped(KeyEvent r) {
+                if(Character.isWhitespace(r.getKeyChar()) || r.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+                    morseTextArea.setText(english_morse(englishTextArea.getText()));
+                }
             }
         });
+
+        morseTextArea.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent t) {
+                if(Character.isWhitespace(t.getKeyChar()) || t.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+                    englishTextArea.setText(morse_english(morseTextArea.getText()));
+                }
+            }
+        });
+
+        clearEnglishText.addActionListener((y) -> {
+            englishTextArea.setText(null);
+        });
+        clearMorseText.addActionListener((u) -> {
+            morseTextArea.setText(null);
+        });
+
+        JFrame frame = new JFrame();
+        frame.setTitle("Morse Translator");
+        frame.setLayout(new BorderLayout());
+        frame.add(mainPanel, BorderLayout.CENTER);
+        frame.setSize(new Dimension(800, 650));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
+        frame.setVisible(true);
+
+        splitPane.setDividerLocation(frame.getWidth() / 2);
+        englishToMorseBt.doClick();
+    }
+
+    public String morse_english(String i) {
+        StringBuffer o = new StringBuffer();
+        Stream.of(i.split("[ \n]")).forEach(p -> {
+            for(char a: p.toCharArray()) {
+                o.append(engMors.containsKey(String.valueOf(a).toUpperCase()) ? engMors.get(String.valueOf(a).toUpperCase()) + " " : "? ");
+            }
+            o.append(" / ");
+        });
+        return o.toString();
+    }
+
+    public String english_morse(String s) {
+        StringBuffer d = new StringBuffer();
+        Stream.of(s.split("[\\s\\n]")).filter(f -> f != null && !f.isEmpty()).forEach(g -> {
+            if (g.equalsIgnoreCase("/") || g.equalsIgnoreCase("|")) {
+                d.append(" ");
+            }
+            else {d.append((morseEng.containsKey(g) ? morseEng.get(g) : "? ").toLowerCase());}
+        });
+        return d.toString();
     }
 }
